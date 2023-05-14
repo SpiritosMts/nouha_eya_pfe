@@ -45,11 +45,13 @@ class HistoryCtr extends GetxController {
     });
   }
 
+
+  // to get history values
   initHistoryValues() async {
 
      gas_history = [];//json value and time
      gas_times = [];//time
-    gas_values = [];//value
+     gas_values = [];//value
 
      noise_history = [];
      noise_times = [];//time
@@ -83,18 +85,19 @@ class HistoryCtr extends GetxController {
   }
 
 
+  /// delete history values /////
   deleteFirstValues(int deleteCount,String type) async {
-    DatabaseReference gasRef = database!.ref('Leoni/LTN4/SR1/$type');
+      DatabaseReference gasRef = database!.ref('Leoni/LTN4/SR1/$type');
 
     await gasRef.limitToFirst(deleteCount).once().then((DatabaseEvent value) {
       if (value.snapshot.exists){
         Map<dynamic, dynamic> gasValues = value.snapshot.value as Map<dynamic, dynamic>;
         List keys = gasValues.keys.toList();
-        keys.forEach((key) {
+        keys.forEach((key) { // 20 loop
           gasRef.child(key).remove();
         });
       }else{
-        print('## âth to delete values dont exist');
+        print('## failed to delete: values dont exist');
       }
       //print('## vals: $gasValues');
 
@@ -108,12 +111,9 @@ class HistoryCtr extends GetxController {
     //   });
     // });
   }
-
   Future<void> deleteHisDialog(BuildContext context,String type,List hisList) {
     TextEditingController _textEditingController = TextEditingController();
     final _serverFormKey = GlobalKey<FormState>();
-
-
 
     return showDialog<String>(
       context: context,
@@ -165,6 +165,7 @@ class HistoryCtr extends GetxController {
       },
     );
   }
+  /// //////////////
 
 
   Future<List> getHistoryData(dataTypePath) async {
@@ -193,14 +194,15 @@ class HistoryCtr extends GetxController {
   }
   List<FlSpot> generateSpots(List dataList) {
     //print('## generate spots...');
+    // dataList <gas_history>
     List<FlSpot> spots = [];
     for (int i = 0 ; i < dataList.length ; i++) {
       //print('## ${dataList[i]['value']}');
       //bool isLast = i % spots.length == 0;
       spots.add(
           FlSpot(
-              i.toDouble(),
-              double.parse(dataList[i]['value'].toString())
+              i.toDouble(), // X
+              double.parse(dataList[i]['value'].toString()) // Y
           )
       );
     }

@@ -55,6 +55,7 @@ double replaceWithClosestHalf(double value) {
     return intValue.toDouble() + 1.0;
   }
 }
+
 String getMinValue(List<String> values) {
   return values.reduce((currentMin, value) {
     return (value.compareTo(currentMin) < 0) ? value : currentMin;
@@ -77,6 +78,7 @@ String formatNumberAfterComma(String number) {
   }
 
 }
+
 dialogShow(title, desc, {bool isSuccessful = false, bool autoHide = false}) {
   AwesomeDialog(
     autoDismiss: true,

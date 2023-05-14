@@ -7,6 +7,8 @@ import 'package:server_room/my_voids.dart';
 
 import '../home_page/home_page.dart';
 
+
+
 class MyLogin extends StatefulWidget {
   const MyLogin({Key? key}) : super(key: key);
 
@@ -30,12 +32,10 @@ class _MyLoginState extends State<MyLogin> {
       print('## try to signIn');
 
       //try signIn
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
-      )
-          .then((value) async {
+      ).then((value) async {
         //account found
 
         await getUserInfoByEmail(_emailController.text).then((value) {
@@ -61,6 +61,7 @@ class _MyLoginState extends State<MyLogin> {
     }
     // Navigate to home page
   }
+
 
   @override
   Widget build(BuildContext context) {

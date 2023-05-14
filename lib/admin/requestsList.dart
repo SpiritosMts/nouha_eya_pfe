@@ -39,7 +39,6 @@ class _RequestsListState extends State<RequestsList> {
                   itemCount: gc.userListReq.length,
                   itemBuilder: (BuildContext context, int index) {
                     SrUser user = gc.userListReq[index];
-
                     return gc.userCard0(user,hasRequest: true);
                   })
               : gc.shouldLoad

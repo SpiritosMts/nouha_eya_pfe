@@ -44,9 +44,9 @@ class UsersCtr extends GetxController {
     //fill user map
     for (var _user in usersData) {
       if (_user.get('verified') == true)
-        userMap[_user.id] = SrUserFromMap(_user);
+        userMap[_user.id] = SrUserFromMap(_user);//verified in list
       else
-        userMapReq[_user.id] = SrUserFromMap(_user);
+        userMapReq[_user.id] = SrUserFromMap(_user);// not verifies in other list
     }
 
     userList = userMap.entries.map((entry) => entry.value).toList();
@@ -58,6 +58,7 @@ class UsersCtr extends GetxController {
     update();
   }
 
+  // search voids
   void runFilterList(String enteredKeyword) {
     print('## running filter ...');
     List<SrUser>? results = [];
@@ -71,20 +72,18 @@ class UsersCtr extends GetxController {
     foundUsersList = results;
     update();
   }
-
-
-
   clearSelectedProduct() async {
     typeAheadController.clear();
     runFilterList(typeAheadController.text);
     appBarTyping(false);
     update();
   }
-
   appBarTyping(typ) {
     typing = typ;
     update();
   }
+  // //////
+
 
   addFirstServer(userID) async {
 
@@ -115,7 +114,7 @@ class UsersCtr extends GetxController {
     usersColl.doc(userID).get().then((DocumentSnapshot documentSnapshot) async {
       if (documentSnapshot.exists) {
         await usersColl.doc(userID).update({
-          'verified': true,
+          'verified': true, // turn verified to true in  db
         }).then((value) async {
           //addFirstServer(userID);
           print('## user request accepted');
@@ -123,6 +122,22 @@ class UsersCtr extends GetxController {
         }).catchError((error) async {
           print('## user request accepted accepting error =${error}');
           toastShow('user request accepted accepting error');
+        });
+      }
+    });
+  }
+  makeUserAdmin(String userID) {
+    usersColl.doc(userID).get().then((DocumentSnapshot documentSnapshot) async {
+      if (documentSnapshot.exists) {
+        await usersColl.doc(userID).update({
+          'isAdmin': true, // turn verified to true in  db
+        }).then((value) async {
+          //addFirstServer(userID);
+          print('## user is admin now');
+          toastShow('user is admin now');
+        }).catchError((error) async {
+          //print('## user request accepted accepting error =${error}');
+          toastShow('user making admin error');
         });
       }
     });
@@ -188,10 +203,10 @@ class UsersCtr extends GetxController {
                             icon: Icons.check,
                             btnOkColor: Colors.green,
                             btnOkText: 'Accept',
-                          ).then((toAllow) {
+                          ).then((toAllow) {// if admin accept
                             if (toAllow) {
                               acceptUser(user.id!);
-                              getUsersData();
+                              getUsersData();//refresh
                             }
                           });
                         },
@@ -206,9 +221,9 @@ class UsersCtr extends GetxController {
                         onTap: () {
                           showNoHeader(txt: 'Are you sure you want to deny this user request ?').then((toDeny) {
                             if (toDeny) {
-                              deleteUser(user.id!);
-                              getUsersData();
-                              deleteUserFromAuth(user.email, user.pwd);
+                              deleteUser(user.id!);// delete user from firestore
+                              getUsersData();//refresh
+                              deleteUserFromAuth(user.email, user.pwd);// delete from auth
 
                             }
                           });
@@ -232,6 +247,22 @@ class UsersCtr extends GetxController {
                               getUsersData();
                               deleteUserFromAuth(user.email, user.pwd);
 
+                            }
+                          });
+                        },
+                      ),
+                      SizedBox(width: 17),
+                      GestureDetector(
+                        child: Icon(
+                          size: 20,
+                          Icons.admin_panel_settings,
+                          color: Colors.blue,
+                        ),
+                        onTap: () {
+                          showNoHeader(txt: 'Are you sure you want to make this user an admin ?').then((toMakeAdmin) {
+                            if (toMakeAdmin) {
+                              makeUserAdmin(user.id!);
+                              getUsersData();//refresh
                             }
                           });
                         },

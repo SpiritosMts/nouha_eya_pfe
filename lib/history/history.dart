@@ -22,15 +22,12 @@ class HistoryView extends StatefulWidget {
 }
 
 class _HistoryViewState extends State<HistoryView> {
-
   final HistoryCtr gc = Get.put<HistoryCtr>(HistoryCtr());
-  int eachTimeHis=3;
+  int eachTimeHis = 3;
 
-
- Widget chartGraph(dataName,dataList,timeList,valList,minVal,maxVal,wid){
-
-   String min = getMinValue(valList);
-   String max = getMaxValue(valList);
+  Widget chartGraph(dataName, dataList, timeList, valList, minVal, maxVal, wid) {
+    String min = getMinValue(valList);
+    String max = getMaxValue(valList);
 
     return Column(
       children: [
@@ -40,10 +37,10 @@ class _HistoryViewState extends State<HistoryView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('${dataName} ', textAlign: TextAlign.left, style: TextStyle(fontSize: 22)),
-              Text('(min:$min, max:$max)', textAlign: TextAlign.left, style: TextStyle(fontSize: 15,color: Colors.black54)),
+              Text('(min:$min, max:$max)', textAlign: TextAlign.left, style: TextStyle(fontSize: 15, color: Colors.black54)),
               TextButton(
-                onPressed: ()async {
-                  await gc.deleteHisDialog(context,dataName,dataList);
+                onPressed: () async {
+                  await gc.deleteHisDialog(context, dataName, dataList);  // shoiw delete dialog
                 },
                 child: Text('reduce'),
               )
@@ -54,10 +51,10 @@ class _HistoryViewState extends State<HistoryView> {
           scrollDirection: Axis.horizontal,
           child: Container(
             height: 33.h,
-            width: 100.h *wid,
+            width: 100.h * wid,
             //SingleChildScrollView / scrollDirection: Axis.horizontal,
             child: Padding(
-              padding: const EdgeInsets.only(left: 5.0,right: 8.0),
+              padding: const EdgeInsets.only(left: 5.0, right: 8.0),
               child: Container(
                 color: Colors.grey[200],
                 //width: MediaQuery.of(context).size.width /1.02,
@@ -84,24 +81,25 @@ class _HistoryViewState extends State<HistoryView> {
                           tooltipPadding: EdgeInsets.all(8.0),
                           //maxContentWidth: 40,
                           getTooltipItems: (touchedSpots) {
-                            return touchedSpots.map((LineBarSpot touchedSpot) {
-                              //gc.changeGazTappedValue(gc.dataPoints[touchedSpot.spotIndex].toString());
-                              const textStyle = TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              );
-                              return LineTooltipItem(
-                                formatNumberAfterComma('${dataList[touchedSpot.spotIndex]}'),
-                                textStyle,
-                              );
-                            },
+                            return touchedSpots.map(
+                              (LineBarSpot touchedSpot) {
+                                //gc.changeGazTappedValue(gc.dataPoints[touchedSpot.spotIndex].toString());
+                                const textStyle = TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                );
+                                return LineTooltipItem(
+                                  formatNumberAfterComma('${dataList[touchedSpot.spotIndex]}'),
+                                  textStyle,
+                                );
+                              },
                             ).toList();
                           },
                         ),
                         getTouchedSpotIndicator: (LineChartBarData barData, List<int> indicators) {
                           return indicators.map(
-                                (int index) {
+                            (int index) {
                               final line = FlLine(color: Colors.blue, strokeWidth: 2, dashArray: [2, 5]);
                               return TouchedSpotIndicatorData(
                                 line,
@@ -112,35 +110,34 @@ class _HistoryViewState extends State<HistoryView> {
                         },
                         getTouchLineEnd: (_, __) => double.infinity),
                     baselineY: 0,
-                    minY:minVal,
+                    minY: minVal,
                     maxY: maxVal,
 
                     ///rangeAnnotations
-                    rangeAnnotations:RangeAnnotations(
-                      // verticalRangeAnnotations:[
-                      //   VerticalRangeAnnotation(x1: 1,x2: 2),
-                      //   VerticalRangeAnnotation(x1: 3,x2: 4)
-                      // ],
+                    rangeAnnotations: RangeAnnotations(
+                        // verticalRangeAnnotations:[
+                        //   VerticalRangeAnnotation(x1: 1,x2: 2),
+                        //   VerticalRangeAnnotation(x1: 3,x2: 4)
+                        // ],
                         horizontalRangeAnnotations: [
                           //HorizontalRangeAnnotation(y1: 89,y2: 90,color: Colors.redAccent),
                           // HorizontalRangeAnnotation(y1: 3,y2: 4),
                           // HorizontalRangeAnnotation(y1: 5,y2: 6),
-                        ]
-                    ) ,
+                        ]),
 
-                    backgroundColor: Colors.white10,
+                    backgroundColor: Colors.white10,// color bg
                     borderData: FlBorderData(
                         border: const Border(
-                          bottom: BorderSide(),
-                          left: BorderSide(),
-                          top: BorderSide(),
-                          //right: BorderSide(),
-                        )),
+                      bottom: BorderSide(),
+                      left: BorderSide(),
+                      top: BorderSide(),
+                      //right: BorderSide(),
+                    )),
                     gridData: FlGridData(show: false, horizontalInterval: 50, verticalInterval: 1),
                     titlesData: FlTitlesData(
                       show: true,
-                      bottomTitles: AxisTitles(sideTitles: bottomTimeTitles(eachTimeHis, timeList)),
-                      leftTitles: AxisTitles(sideTitles: leftTitlesHistory),
+                      bottomTitles: AxisTitles(sideTitles: bottomTimeTitles(eachTimeHis, timeList)), // time line
+                      leftTitles: AxisTitles(sideTitles: leftTitlesHistory), // values line
                       topTitles: AxisTitles(sideTitles: topTitles),
                       rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                     ),
@@ -188,77 +185,71 @@ class _HistoryViewState extends State<HistoryView> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
-        title:  GetBuilder<HomePageCtr>(
-            id:'appBar',
-            builder: (_) {
-              return Text('History');
-            }
-        ),
-
+        title: Text('History'),
       ),
       body: GetBuilder<HomePageCtr>(
           id: 'chart',
           builder: (_) {
-
-
-
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: ( !gc.loading) ?
-              SingleChildScrollView(
-                child: Column(
-                  //shrinkWrap: true,
-                  //mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
+              child: (!gc.loading)
+                  ? SingleChildScrollView(
+                      child: Column(
+                        //shrinkWrap: true,
+                        //mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          /// GAS chart
+                          if (gc.gas_history.isNotEmpty)
+                            chartGraph(
+                              'gas',
+                              gc.gas_history, // list { 'time':25, 'value':147 }
+                              gc.gas_times,//list [25,26 ..]
+                              gc.gas_values,//list [147,144 ..]
+                              replaceWithClosestHalf(double.parse(getMinValue(gc.gas_values)) - 200.0),
+                              replaceWithClosestHalf(double.parse(getMaxValue(gc.gas_values)) + 200.0),
+                              gc.gas_history.length / 50 < 1.0 ? 1.0 : gc.gas_history.length / 50,
+                            ),
 
-                    if(gc.gas_history.isNotEmpty) chartGraph(
-                      'gas',
-                      gc.gas_history,
-                      gc.gas_times,
-                      gc.gas_values,
-                      replaceWithClosestHalf(double.parse(getMinValue(gc.gas_values))-200.0),
-                      replaceWithClosestHalf(double.parse(getMaxValue(gc.gas_values))+200.0),
-                      gc.gas_history.length/50 < 1.0 ? 1.0:gc.gas_history.length/50,
-                    ),
-                    SizedBox(height:20),
-                    if(gc.temp_history.isNotEmpty) chartGraph(
-                        'temperature',
-                        gc.temp_history,
-                      gc.tem_times,
-                      gc.tem_values,
+                          /// temperature chart
+                          SizedBox(height: 20),
+                          if (gc.temp_history.isNotEmpty)
+                            chartGraph(
+                              'temperature',
+                              gc.temp_history,
+                              gc.tem_times,
+                              gc.tem_values,
+                              replaceWithClosestHalf(double.parse(getMinValue(gc.tem_values)) - 1.0),
+                              replaceWithClosestHalf(double.parse(getMaxValue(gc.tem_values)) + 1.0),
+                              gc.temp_history.length / 50 < 1.0 ? 1.0 : gc.temp_history.length / 50,
+                            ),
 
-                      replaceWithClosestHalf(double.parse(getMinValue(gc.tem_values))-1.0),
-                      replaceWithClosestHalf(double.parse(getMaxValue(gc.tem_values))+1.0),
-                      gc.temp_history.length/50 < 1.0 ? 1.0:gc.temp_history.length/50,
+                          /// noise chart
+                          SizedBox(height: 20),
+                          if (gc.noise_history.isNotEmpty)
+                            chartGraph(
+                              'sound',
+                              gc.noise_history,
+                              gc.noise_times,
+                              gc.noise_values,
+                              100.0,
+                              5000.0,
+                              // double.parse(getMinValue(gc.noise_values))-2.0,
+                              // double.parse(getMaxValue(gc.noise_values))+2.0,
+                              gc.noise_history.length / 50 < 1.0 ? 1.0 : gc.noise_history.length / 50,
+                            ),
+                          SizedBox(height: 20)
+                        ],
+                      ),
+                    )
+                  : Center(
+                      child: CircularProgressIndicator(),
                     ),
-                    SizedBox(height:20),
-                   if(gc.noise_history.isNotEmpty) chartGraph(
-                        'sound',
-                        gc.noise_history,
-                     gc.noise_times,
-                     gc.noise_values,
-
-                        100.0,
-                        5000.0,
-                        // double.parse(getMinValue(gc.noise_values))-2.0,
-                        // double.parse(getMaxValue(gc.noise_values))+2.0,
-                     gc.noise_history.length/50 < 1.0 ? 1.0:gc.noise_history.length/50,
-                    ),
-                    SizedBox(height: 20)
-                  ],
-                ),
-              ):Center(
-                child: CircularProgressIndicator(),
-              ),
             );
-          }
-      ),
+          }),
       // floatingActionButton: ElevatedButton.icon(
       //   onPressed: () {
       //     setState(() {

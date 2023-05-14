@@ -88,13 +88,14 @@ class HomePageCtr extends GetxController {
   DateTime startDateTime = DateTime.now();
 
 
+
   @override
   void onInit() {
     super.onInit();
     startDateTime =  startDateTime.subtract(Duration(seconds:gasDataPts.length ));
 
     Future.delayed(const Duration(milliseconds: 500), () async {//time to start readin data
-      serversNumber = await getChildrenLength();
+      serversNumber = await getChildrenLength(); //1
       if(servers.isNotEmpty){
         changeServer(servers[0]);
         realTimeListen();// start streamData
@@ -228,7 +229,15 @@ addServer(context) async {
     //update(['chart']);
 
   }
-/// /////////////////////
+   removeServer(serverName) async {
+     await database!.ref('Leoni/LTN4/$serverName').remove().then((value) async {
+       print('##  < $serverName > removed!');
+     });
+     servers.remove(serverName);
+     update(['appBar']);
+   }
+
+   /// /////////////////////
 
 
 
@@ -271,22 +280,15 @@ addServer(context) async {
   }
   /// //////////////////////
 
-  removeServer(serverName) async {
-    await database!.ref('Leoni/LTN4/$serverName').remove().then((value) async {
-       print('##  < $serverName > removed!');
-     });
-    servers.remove(serverName);
-    update(['appBar']);
-   }
 
   periodicFunction() {
     Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      Random random = new Random();
-      String randomNumber = (random.nextDouble() * (100 - (-50)) + (-50)).toString();
-      String newPointData = gas_data;
+      //Random random = new Random();
+      //String randomNumber = (random.nextDouble() * (100 - (-50)) + (-50)).toString();
+      //String newPointData = gas_data;
 
       //newestChartValue = randomNumber;///random
-      newestChartValue = newPointData;///from fb
+      //newestChartValue = newPointData;///from fb
 
       updateGasDataPoints(gas_data);
       updateSoundDataPoints(noise_data);

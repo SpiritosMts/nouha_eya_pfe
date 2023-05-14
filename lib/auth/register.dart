@@ -12,6 +12,8 @@ class MyRegister extends StatefulWidget {
 }
 
 class _MyRegisterState extends State<MyRegister> {
+
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -40,20 +42,17 @@ class _MyRegisterState extends State<MyRegister> {
     }
 
     try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
-      )
-          .then((value) {
+      ).then((value) {// register success auth
         addDocument(fieldsMap: {
           'name': _nameController.text,
           'email': _emailController.text,
           'pwd': _passwordController.text,
           'isAdmin': false,
           'verified': false,
-        }, collName: 'users')
-            .then((value) {
+        }, collName: 'users').then((value) {
           // Show registration successful message
           dialogShow(
             'Registration Successful',
@@ -81,6 +80,8 @@ class _MyRegisterState extends State<MyRegister> {
       print('## catch err in signUp user_auth: $e');
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {

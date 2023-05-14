@@ -12,13 +12,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 SharedPreferences? sharedPrefs;
 
+
 void main() async {
   print('## mainRun');
   await WidgetsFlutterBinding.ensureInitialized(); //don't touch
   sharedPrefs = await SharedPreferences.getInstance();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp();//begin firebase
 
-  //Get.put<homePageCtr>(homePageCtr()); // initialize home cTr
 
   runApp(
     ResponsiveSizer(
@@ -27,8 +27,8 @@ void main() async {
           navigatorKey: navigatorKey,
           title: 'Server Room',
           debugShowCheckedModeBanner: false,
-          home: HomePage(),
-          //home: MyLogin(),
+          //home: HomePage(),
+          home: MyLogin(),
         );
       }
     ),

@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
           title: const Text('Home'),
           onTap: () {
             //Get.put<HomePageCtr>(HomePageCtr()).deleteFirstValues(5);
-            Get.back();
+            Get.back();// remove drawer
             Get.to(() => HomePage());
           },
         ),
@@ -112,6 +112,7 @@ class _HomePageState extends State<HomePage> {
 
      //print('## ${value.toInt()}');
 
+
       //bool isDivisibleBy15 = ((value.toInt() % 13 == 0) );
       DateTime newDateTime = gc.startDateTime.add(Duration(seconds: value.toInt()));
       //bottomText = DateFormat('mm:ss').format(newDateTime);
@@ -150,7 +151,7 @@ class _HomePageState extends State<HomePage> {
 
       //return Text('-');
     },
-  );
+  );//current  time
 
 
   Widget chartGraph(type_data,type_name,data_points,minVal,maxVal){
@@ -397,7 +398,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(height: 20,),
                   chartGraph(
-                    gc.tem_data,
+                    gc.tem_data,//real time change when you change it from fb
                       'Temperature',
                       gc.tempDataPts,
                     getDoubleMinValue(gc.tempDataPts)-20.0,

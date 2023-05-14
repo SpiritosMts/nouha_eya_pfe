@@ -52,31 +52,31 @@ SideTitles get leftTitles => SideTitles(
 
 
 SideTitles get leftTitlesHistory => SideTitles(
-  interval: 50,
+  //interval: 50,
   showTitles: true,
   getTitlesWidget: (double value, meta) {
     //print('## value ${value.toString()}');
     String text = '';
     switch (value.toString()) {
-      case '23.0':
-        text = '23.0';
-        break;
-      case '23.5':
-        text = '23.5';
-        break;
-      case '24.0':
-        text = '24.0';
-        break;
-      case '24.5':
-        text = '24.5';
-        break;
-      case '25.0':
-        text = '25.0';
-        break;
+      // case '23.0':
+      //   text = '23.0';
+      //   break;
+      // case '23.5':
+      //   text = '23.5';
+      //   break;
+      // case '24.0':
+      //   text = '24.0';
+      //   break;
+      // case '24.5':
+      //   text = '24.5';
+      //   break;
+      // case '25.0':
+      //   text = '25.0';
+      //   break;
     }
 
     return Text(
-      text,
+      value.toString(),
       maxLines: 1,
       textAlign: TextAlign.center,
       style: TextStyle(fontSize: 11),
@@ -84,3 +84,39 @@ SideTitles get leftTitlesHistory => SideTitles(
   },
 );
 
+
+SideTitles  bottomTimeTitles(int eachTime, List<String> timeList) {
+  return SideTitles(
+  interval: 1,
+  showTitles: true,
+  getTitlesWidget: (value, meta) {
+    int index =value.toInt();
+    String bottomText = '';
+
+    //print('## ${value.toInt()}');
+
+    //bool isDivisibleBy15 = ((value.toInt() % 13 == 0) );
+    //bottomText = (value.toInt() ).toString();
+
+    switch (value.toInt() % eachTime ) {
+
+      case 0:
+//        bottomText = DateFormat('HH:mm:ss').format(newDateTime);
+        bottomText=timeList[index];
+
+        break;
+    // case 0:
+    //   bottomText = DateFormat('mm:ss').format(newDateTime);
+    //   break;
+
+    }
+
+    return Text(
+      bottomText,
+      maxLines: 1,
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 11),
+    );
+  },
+);
+}

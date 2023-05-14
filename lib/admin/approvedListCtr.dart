@@ -11,7 +11,7 @@ import '../models/user.dart';
 import '../my_voids.dart';
 
 class UsersCtr extends GetxController {
-  late StreamSubscription<QuerySnapshot> streamSub;
+   StreamSubscription<QuerySnapshot>?  streamSub;
 
   @override
   void onInit() {

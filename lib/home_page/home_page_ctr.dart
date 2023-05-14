@@ -20,9 +20,9 @@ class HomePageCtr extends GetxController {
    String newestChartValue ='0';
 
   int periodicUpdateData = 1000;
-  String gas_tapped_val = '00.00';
+  //String gas_tapped_val = '00.00';
   String gas_data = '0';
-  String sound_data = '0';
+  String noise_data = '0';
   String tem_data = '0';
   String? selectedServer ;
   bool showTime = true;
@@ -48,7 +48,7 @@ class HomePageCtr extends GetxController {
     0,
     0,
   ]; // initial data points
-  List<double> soundDataPts = [
+  List<double> noiseDataPts = [
     0,
     0,
     0,
@@ -93,7 +93,6 @@ class HomePageCtr extends GetxController {
     super.onInit();
     startDateTime =  startDateTime.subtract(Duration(seconds:gasDataPts.length ));
 
-
     Future.delayed(const Duration(milliseconds: 500), () async {//time to start readin data
       serversNumber = await getChildrenLength();
       if(servers.isNotEmpty){
@@ -107,6 +106,7 @@ class HomePageCtr extends GetxController {
       }
     });
   }
+
 
 
 
@@ -215,17 +215,9 @@ addServer(context) async {
     DatabaseReference serverData = database!.ref('Leoni/LTN4');
     await serverData.update({
       "$serverName": {
-        "gas": {
-          'key0':0,
-        },
-        "sound": {
-          'key0':0,
-
-        },
-        "temperature": {
-          'key0':0,
-
-        },
+        "gas_once": 0.0,
+        "sound_once": 0,
+        "temperature_once": 0.0,
       }
     }).then((value) async {
       await serverAdded();
@@ -274,8 +266,8 @@ addServer(context) async {
    updateSoundDataPoints(newData) {
     double getNewDataPoint= double.parse(newData); // your code to retrieve new data point here
     // update data points and rebuild chart
-    soundDataPts.removeAt(0); // remove oldest data point
-    soundDataPts.add(getNewDataPoint); // add new data point
+    noiseDataPts.removeAt(0); // remove oldest data point
+    noiseDataPts.add(getNewDataPoint); // add new data point
   }
   /// //////////////////////
 
@@ -297,7 +289,7 @@ addServer(context) async {
       newestChartValue = newPointData;///from fb
 
       updateGasDataPoints(gas_data);
-      updateSoundDataPoints(sound_data);
+      updateSoundDataPoints(noise_data);
       updateTempDataPoints(tem_data);
 
       update(['chart']);
@@ -307,7 +299,7 @@ addServer(context) async {
   }
 
   realTimeListen() async {
-    //print('## realTimeListen...');
+    print('## realTimeListen <void_call>...');
     //DatabaseReference serverData = database!.ref('Leoni/LTN4/$server');
     DatabaseReference serverData = database!.ref('Leoni/LTN4/$selectedServer');
       streamData = serverData.onValue.listen((DatabaseEvent event) {
@@ -315,11 +307,11 @@ addServer(context) async {
 
       // /////////////
       gas_data = event.snapshot.child('gas_once').value.toString();
-      sound_data = event.snapshot.child('sound_once').value.toString();
+      noise_data = event.snapshot.child('sound_once').value.toString();
       tem_data = event.snapshot.child('temperature_once').value.toString();
 
 
-     // print('## LAST-gas_data:$gas_data');
+      print('## LAST_read_data: <gas: $gas_data /tem: $tem_data /noise: $noise_data >');
       //print('## gas_data_pointd:$gasValueList');
 
       update(['chart']);

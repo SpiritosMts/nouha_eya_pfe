@@ -32,7 +32,8 @@ toastShow(text) {
       gravity: ToastGravity.CENTER,
       backgroundColor: Colors.green,
       textColor: Colors.white,
-      fontSize: 16.0);
+      fontSize: 16.0
+  );
 }
 
 double getDoubleMinValue(List<double> values) {
@@ -42,7 +43,18 @@ double getDoubleMaxValue(List<double> values) {
   return values.reduce((currentMax, value) => value > currentMax ? value : currentMax);
 }
 
+double replaceWithClosestHalf(double value) {
+  int intValue = value.toInt();
+  double decimalPart = value - intValue;
 
+  if (decimalPart < 0.25) {
+    return intValue.toDouble();
+  } else if (decimalPart >= 0.25 && decimalPart < 0.75) {
+    return intValue.toDouble() + 0.5;
+  } else {
+    return intValue.toDouble() + 1.0;
+  }
+}
 String getMinValue(List<String> values) {
   return values.reduce((currentMin, value) {
     return (value.compareTo(currentMin) < 0) ? value : currentMin;

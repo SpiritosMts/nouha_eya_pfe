@@ -14,13 +14,25 @@ import '../../models/user.dart';
 import '../../my_voids.dart';
 import 'package:intl/intl.dart';
 
+import 'history.dart';
+
 class HistoryCtr extends GetxController {
-  StreamSubscription<DatabaseEvent>? streamData;
 
 
-  List<String> gas_history = [];
-  List<String> noise_history = [];
-  List<String> temp_history = [];
+  List gas_history = [];//json value and time
+  List<String> gas_times = [];//time
+  List<String> gas_values = [];//value
+
+  List noise_history = [];
+  List<String> noise_times = [];//time
+  List<String> noise_values = [];//value
+
+  List temp_history = [];
+  List<String> tem_times = [];//time
+  List<String> tem_values = [];//value
+
+
+  bool loading = true;
 
 
 
@@ -28,21 +40,135 @@ class HistoryCtr extends GetxController {
   void onInit() {
     super.onInit();
     Future.delayed(const Duration(milliseconds: 500), () async { //time to start readin history  data
-      gas_history = await getHistoryData('Leoni/LTN4/SR1/gas'); // path history
 
-      getMinValue(gas_history);
-
-      print('## ${      getMinValue(gas_history)}');
-      noise_history = await getHistoryData('Leoni/LTN4/SR1/sound');
-      temp_history = await getHistoryData('Leoni/LTN4/SR1/temperature');
-      update(['chart']);
-      update(['appBar']);
+      initHistoryValues();
     });
   }
 
+  initHistoryValues() async {
 
-  Future<List<String>> getHistoryData(dataTypePath) async {
-    List<String> dataHis = [];
+     gas_history = [];//json value and time
+     gas_times = [];//time
+    gas_values = [];//value
+
+     noise_history = [];
+     noise_times = [];//time
+     noise_values = [];//value
+
+     temp_history = [];
+    tem_times = [];//time
+    tem_values = [];//value
+
+
+    loading = true;
+    gas_history = await getHistoryData('Leoni/LTN4/SR1/gas'); // path history
+    gas_values = gas_history.map((map) => map['value'].toDouble().toString() ).toList();
+    gas_times = gas_history.map((map) => map['time'].toString() ).toList();
+    print('## gas_history<${gas_history.length}>// gas_values<${gas_values}>// gas_times<${gas_times}>');
+
+
+
+    temp_history = await getHistoryData('Leoni/LTN4/SR1/temperature');
+    tem_values = temp_history.map((map) => map['value'].toString() ).toList();
+    tem_times = temp_history.map((map) => map['time'].toString() ).toList();
+    //
+    //
+    noise_history = await getHistoryData('Leoni/LTN4/SR1/sound');
+    noise_values = noise_history.map((map) => map['value'].toString() ).toList();
+    noise_times = noise_history.map((map) => map['time'].toString() ).toList();
+
+    loading =false;
+    update(['chart']);
+    update(['appBar']);
+  }
+
+
+  deleteFirstValues(int deleteCount,String type) async {
+    DatabaseReference gasRef = database!.ref('Leoni/LTN4/SR1/$type');
+
+    await gasRef.limitToFirst(deleteCount).once().then((DatabaseEvent value) {
+      if (value.snapshot.exists){
+        Map<dynamic, dynamic> gasValues = value.snapshot.value as Map<dynamic, dynamic>;
+        List keys = gasValues.keys.toList();
+        keys.forEach((key) {
+          gasRef.child(key).remove();
+        });
+      }else{
+        print('## âth to delete values dont exist');
+      }
+      //print('## vals: $gasValues');
+
+    });
+    //     .then((snapshot) {
+    //   Map<dynamic, dynamic> gasValues = snapshot.value;
+    //   List<String> keys = gasValues.keys.toList();
+    //
+    //   keys.forEach((key) {
+    //     gasRef.child(key).remove();
+    //   });
+    // });
+  }
+
+  Future<void> deleteHisDialog(BuildContext context,String type,List hisList) {
+    TextEditingController _textEditingController = TextEditingController();
+    final _serverFormKey = GlobalKey<FormState>();
+
+
+
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Values number to delete'),
+          content: Form(
+            key: _serverFormKey,
+            child: TextFormField(
+              controller: _textEditingController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'number (max: ${hisList.length})',
+              ),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'number cannot be empty';
+                }
+                if(int.parse(value)>hisList.length){
+                  return 'number is greater than max';
+                }
+                return null;
+              },
+            ),
+          ),
+
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                int count = int.parse(_textEditingController.text);
+                //if(sName.isNotEmpty && servers.contains(sName))
+                if(_serverFormKey.currentState!.validate()){
+                  deleteFirstValues(count,type);
+                  Navigator.of(context).pop();
+                  Future.delayed(const Duration(milliseconds: 800), () async { //time to start readin history  data
+
+                    initHistoryValues();
+                  });                  // Navigator.of(context).pop();
+                  // Future.delayed(const Duration(milliseconds: 1000), () async { //time to start readin history  data
+                  //
+                  //   Get.to(() => HistoryView());
+                  // });
+                }
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  Future<List> getHistoryData(dataTypePath) async {
+    List dataHis = [];
     DatabaseReference serverData = database!.ref(dataTypePath);
     //servers = sharedPrefs!.getStringList('servers') ?? ['server1'];
 
@@ -51,7 +177,7 @@ class HistoryCtr extends GetxController {
     if (snapshot.exists) {
       snapshot.children.forEach((element) {
         //print('## ele ${element.key}');
-        dataHis.add(element.value.toString());
+        dataHis.add(element.value);
         //print('## type... <${element.value.runtimeType}>');
 
       });
@@ -62,18 +188,19 @@ class HistoryCtr extends GetxController {
     }
 
     update(['chart']);
-    print('## <<${dataHis.length}>> hisValues=<$dataHis> ');
+    //print('## <<${dataHis.length}>> hisValues=<$dataHis> ');
     return dataHis;
   }
   List<FlSpot> generateSpots(List dataList) {
     //print('## generate spots...');
     List<FlSpot> spots = [];
     for (int i = 0 ; i < dataList.length ; i++) {
+      //print('## ${dataList[i]['value']}');
       //bool isLast = i % spots.length == 0;
       spots.add(
           FlSpot(
               i.toDouble(),
-              double.parse(dataList[i])
+              double.parse(dataList[i]['value'].toString())
           )
       );
     }

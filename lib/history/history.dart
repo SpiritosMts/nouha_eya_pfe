@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:server_room/history/history_ctr.dart';
 import 'package:server_room/home_page/home_page_ctr.dart';
 import 'package:intl/intl.dart';
@@ -23,9 +24,14 @@ class HistoryView extends StatefulWidget {
 class _HistoryViewState extends State<HistoryView> {
 
   final HistoryCtr gc = Get.put<HistoryCtr>(HistoryCtr());
+  int eachTimeHis=3;
 
 
- Widget chartGraph(dataName,dataList,minVal,maxVal,wid){
+ Widget chartGraph(dataName,dataList,timeList,valList,minVal,maxVal,wid){
+
+   String min = getMinValue(valList);
+   String max = getMaxValue(valList);
+
     return Column(
       children: [
         Padding(
@@ -33,18 +39,25 @@ class _HistoryViewState extends State<HistoryView> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('${dataName} History', textAlign: TextAlign.left, style: TextStyle(fontSize: 24)),
+              Text('${dataName} ', textAlign: TextAlign.left, style: TextStyle(fontSize: 22)),
+              Text('(min:$min, max:$max)', textAlign: TextAlign.left, style: TextStyle(fontSize: 15,color: Colors.black54)),
+              TextButton(
+                onPressed: ()async {
+                  await gc.deleteHisDialog(context,dataName,dataList);
+                },
+                child: Text('reduce'),
+              )
             ],
           ),
         ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Container(
-            height: MediaQuery.of(context).size.height /3,
-            width: MediaQuery.of(context).size.height *wid,
+            height: 33.h,
+            width: 100.h *wid,
             //SingleChildScrollView / scrollDirection: Axis.horizontal,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.only(left: 5.0,right: 8.0),
               child: Container(
                 color: Colors.grey[200],
                 //width: MediaQuery.of(context).size.width /1.02,
@@ -126,8 +139,8 @@ class _HistoryViewState extends State<HistoryView> {
                     gridData: FlGridData(show: false, horizontalInterval: 50, verticalInterval: 1),
                     titlesData: FlTitlesData(
                       show: true,
-                      bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
-                      //leftTitles: AxisTitles(sideTitles: leftTitlesHistory),
+                      bottomTitles: AxisTitles(sideTitles: bottomTimeTitles(eachTimeHis, timeList)),
+                      leftTitles: AxisTitles(sideTitles: leftTitlesHistory),
                       topTitles: AxisTitles(sideTitles: topTitles),
                       rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                     ),
@@ -155,7 +168,7 @@ class _HistoryViewState extends State<HistoryView> {
                         isStrokeJoinRound: false,
 
                         barWidth: 3.0,
-                        curveSmoothness: 0.25,
+                        curveSmoothness: 0.02,
                         preventCurveOvershootingThreshold: 10.0,
                         lineChartStepData: LineChartStepData(stepDirection: 0),
                         //shadow: Shadow(color: Colors.blue,offset: Offset(0,8)),
@@ -192,34 +205,50 @@ class _HistoryViewState extends State<HistoryView> {
       body: GetBuilder<HomePageCtr>(
           id: 'chart',
           builder: (_) {
+
+
+
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: (gc.gas_history.isNotEmpty && gc.noise_history.isNotEmpty && gc.temp_history.isNotEmpty ) ?
+              child: ( !gc.loading) ?
               SingleChildScrollView(
                 child: Column(
                   //shrinkWrap: true,
                   //mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    chartGraph(
+
+                    if(gc.gas_history.isNotEmpty) chartGraph(
+                      'gas',
+                      gc.gas_history,
+                      gc.gas_times,
+                      gc.gas_values,
+                      replaceWithClosestHalf(double.parse(getMinValue(gc.gas_values))-200.0),
+                      replaceWithClosestHalf(double.parse(getMaxValue(gc.gas_values))+200.0),
+                      gc.gas_history.length/50 < 1.0 ? 1.0:gc.gas_history.length/50,
+                    ),
+                    SizedBox(height:20),
+                    if(gc.temp_history.isNotEmpty) chartGraph(
                         'temperature',
                         gc.temp_history,
-                        double.parse(getMinValue(gc.temp_history))-1.1,
-                        double.parse(getMaxValue(gc.temp_history))+1.0,
-                        gc.temp_history.length/13
+                      gc.tem_times,
+                      gc.tem_values,
+
+                      replaceWithClosestHalf(double.parse(getMinValue(gc.tem_values))-1.0),
+                      replaceWithClosestHalf(double.parse(getMaxValue(gc.tem_values))+1.0),
+                      gc.temp_history.length/50 < 1.0 ? 1.0:gc.temp_history.length/50,
                     ),
-                    chartGraph(
-                        'gas',
-                        gc.gas_history,
-                        double.parse(getMinValue(gc.gas_history))-2.0,
-                        double.parse(getMaxValue(gc.gas_history))+2.0,
-                        gc.gas_history.length/13
-                    ),
-                    chartGraph(
+                    SizedBox(height:20),
+                   if(gc.noise_history.isNotEmpty) chartGraph(
                         'sound',
                         gc.noise_history,
-                        double.parse(getMinValue(gc.noise_history))-2.0,
-                        double.parse(getMaxValue(gc.noise_history))+2.0,
-                        gc.noise_history.length/13
+                     gc.noise_times,
+                     gc.noise_values,
+
+                        100.0,
+                        5000.0,
+                        // double.parse(getMinValue(gc.noise_values))-2.0,
+                        // double.parse(getMaxValue(gc.noise_values))+2.0,
+                     gc.noise_history.length/50 < 1.0 ? 1.0:gc.noise_history.length/50,
                     ),
                     SizedBox(height: 20)
                   ],

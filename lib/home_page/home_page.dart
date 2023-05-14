@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
           leading: const Icon(Icons.home),
           title: const Text('Home'),
           onTap: () {
+            //Get.put<HomePageCtr>(HomePageCtr()).deleteFirstValues(5);
             Get.back();
             Get.to(() => HomePage());
           },
@@ -162,7 +163,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(type_name, textAlign: TextAlign.left, style: TextStyle(fontSize: 24)),
               SizedBox(width: 10,),
-              Text(formatNumberAfterComma(type_data), textAlign: TextAlign.left, style: TextStyle(fontSize: 20,fontWeight: FontWeight.w400))
+              Text('(${formatNumberAfterComma(type_data)})', textAlign: TextAlign.left, style: TextStyle(fontSize: 18,fontWeight: FontWeight.w400,color: Colors.black54))
             ],
           ),
         ),
@@ -283,7 +284,7 @@ class _HomePageState extends State<HomePage> {
                         isStrokeJoinRound: false,
 
                         barWidth: 3.0,
-                        curveSmoothness: 0.25,
+                        curveSmoothness: 0.02,
                         preventCurveOvershootingThreshold: 10.0,
                         lineChartStepData: LineChartStepData(stepDirection: 0),
                         //shadow: Shadow(color: Colors.blue,offset: Offset(0,8)),
@@ -388,19 +389,30 @@ class _HomePageState extends State<HomePage> {
 
 
                   chartGraph(
-
                     gc.gas_data,
                       'Gas',
                       gc.gasDataPts,
                     getDoubleMinValue(gc.gasDataPts)-20.0,
                     getDoubleMaxValue(gc.gasDataPts)+20.0,
-
-                    // 'temperature',
-                      // gc.temp_history,
-                      // double.parse(gc.getMinValue(gc.temp_history))-1.1,
-                      // double.parse(gc.getMaxValue(gc.temp_history))+1.0,
-                      // gc.temp_history.length/13
                   ),
+                  SizedBox(height: 20,),
+                  chartGraph(
+                    gc.tem_data,
+                      'Temperature',
+                      gc.tempDataPts,
+                    getDoubleMinValue(gc.tempDataPts)-20.0,
+                    getDoubleMaxValue(gc.tempDataPts)+20.0,
+                  ),
+                  SizedBox(height: 20,),
+                  chartGraph(
+                    gc.noise_data,
+                      'Noise',
+                      gc.noiseDataPts,
+                    getDoubleMinValue(gc.noiseDataPts)-200.0,
+                    getDoubleMaxValue(gc.noiseDataPts)+200.0,
+                  ),
+                  SizedBox(height: 20,),
+
                 ],
               ),
             ):Center(

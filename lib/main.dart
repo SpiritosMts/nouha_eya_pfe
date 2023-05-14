@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:server_room/auth/login.dart';
 import 'package:server_room/home_page/home_page.dart';
 import 'package:server_room/auth/register.dart';
@@ -20,12 +21,16 @@ void main() async {
   //Get.put<homePageCtr>(homePageCtr()); // initialize home cTr
 
   runApp(
-    GetMaterialApp(
-      navigatorKey: navigatorKey,
-      title: 'Server Room',
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-      //home: MyLogin(),
+    ResponsiveSizer(
+      builder: (context, orientation, deviceType) {
+        return GetMaterialApp(
+          navigatorKey: navigatorKey,
+          title: 'Server Room',
+          debugShowCheckedModeBanner: false,
+          home: HomePage(),
+          //home: MyLogin(),
+        );
+      }
     ),
   );
 }

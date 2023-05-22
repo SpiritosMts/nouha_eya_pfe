@@ -126,6 +126,11 @@ class UsersCtr extends GetxController {
       }
     });
   }
+
+
+
+
+
   makeUserAdmin(String userID) {
     usersColl.doc(userID).get().then((DocumentSnapshot documentSnapshot) async {
       if (documentSnapshot.exists) {

@@ -42,12 +42,12 @@ class HomePageCtr extends GetxController {
        }
      }
 
-     if(double.parse(tem_data) >20 && double.parse(tem_data)<24 ){
+     if(double.parse(tem_data) <= 24 ){
        chartColTem = Colors.green;
        isInDangerTem = false;
        shouldSnoozeTem = true;
 
-     }else if(double.parse(tem_data) >24 && double.parse(tem_data)<27){
+     }else if(double.parse(tem_data) >24 && double.parse(tem_data)<=27){
        chartColTem = Colors.orange;
        inDangerMake();
    }else{
@@ -80,7 +80,7 @@ class HomePageCtr extends GetxController {
        }
      }
 
-     if(double.parse(gas_data) >500 ){
+     if(double.parse(gas_data) >=500 ){
        chartColGas = Colors.red;
        inDangerMake();
 
@@ -114,7 +114,7 @@ class HomePageCtr extends GetxController {
          shouldSnoozeNoise = false;
        }
      }
-     if(double.parse(noise_data) >4000 ){
+     if(double.parse(noise_data) >=4000 ){
        chartColNoise = Colors.red;
        inDangerMake();
 

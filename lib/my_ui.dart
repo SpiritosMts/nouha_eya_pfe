@@ -2,6 +2,7 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 SideTitles get topTitles => SideTitles(
   //interval: 1,
@@ -65,7 +66,20 @@ SideTitles get leftTitlesHistory => SideTitles(
     );
   },
 );
-
+backGroundTemplate({Widget? child}){
+  return Container(
+    //alignment: Alignment.topCenter,
+    width: 100.w,
+    height: 100.h,
+    decoration: const BoxDecoration(
+      image: DecorationImage(
+        image: AssetImage("assets/images/bg.png"),
+        fit: BoxFit.cover,
+      ),
+    ),
+    child: child,
+  );
+}
 
 SideTitles  bottomTimeTitles(int eachTime, List<String> timeList) { //gas_times
   return SideTitles(

@@ -30,8 +30,8 @@ void main() async {
           navigatorKey: navigatorKey,
           title: 'Server Room',
           debugShowCheckedModeBanner: false,
-          home: HomePage(),
-          //home: MyLogin(),
+          //home: HomePage(),
+          home: MyLogin(),
         );
       }
     ),

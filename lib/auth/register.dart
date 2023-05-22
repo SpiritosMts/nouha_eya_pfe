@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../my_ui.dart';
 import '../my_voids.dart';
 
 class MyRegister extends StatefulWidget {
@@ -86,7 +87,7 @@ class _MyRegisterState extends State<MyRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: backGroundTemplate(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50.0),
           child: SingleChildScrollView(
@@ -97,11 +98,11 @@ class _MyRegisterState extends State<MyRegister> {
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
-                    padding: EdgeInsets.only(left: 20.0),
+                    padding: EdgeInsets.only(left: 10.0),
                     child: Text(
                       'Create an account\n',
                       style: TextStyle(
-                        fontSize: 32.0,
+                        fontSize: 28.0,
                         fontWeight: FontWeight.bold,
                         color: Color.fromARGB(255, 0, 0, 0),
                       ),

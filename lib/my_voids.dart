@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:server_room/main.dart';
 import 'package:server_room/models/user.dart';
@@ -67,6 +68,85 @@ double getMaxValue(List<String> values) {
   double maxValue = doubleList.reduce((currentMax, value) => value > currentMax ? value : currentMax);
   return maxValue;
 }
+changeUserName(String newName) {
+  usersColl.doc(currentUser.id).get().then((DocumentSnapshot documentSnapshot) async {
+    if (documentSnapshot.exists) {
+      await usersColl.doc(currentUser.id).update({
+        'name': newName, // turn verified to true in  db
+      }).then((value) async {
+        showSnk('name updated');
+
+        //addFirstServer(userID);
+        //print('## user request accepted');
+        //toastShow('user request accepted');
+      }).catchError((error) async {
+        //print('## user request accepted accepting error =${error}');
+        //toastShow('user request accepted accepting error');
+      });
+    }
+  });
+}
+void changeUserInfo(String newName,String newEmail, String newPassword) async {
+  User? user = FirebaseAuth.instance.currentUser;
+
+  if (user != null) {
+    try {
+      if(newName!= '') await changeUserName(newName);
+
+      // Change email
+      if(newEmail!= '') await user.updateEmail(newEmail).then((value) {
+
+        usersColl.doc(currentUser.id).get().then((DocumentSnapshot documentSnapshot) async {
+          if (documentSnapshot.exists) {
+            await usersColl.doc(currentUser.id).update({
+              'email': newEmail, // turn verified to true in  db
+            }).then((value) async {
+              showSnk('email updated');
+
+            }).catchError((error) async {
+            });
+          }
+        });
+      });
+
+      // Change password
+      if(newPassword!= '')  await user.updatePassword(newPassword).then((value){
+        usersColl.doc(currentUser.id).get().then((DocumentSnapshot documentSnapshot) async {
+          if (documentSnapshot.exists) {
+            await usersColl.doc(currentUser.id).update({
+              'pwd': newPassword, // turn verified to true in  db
+            }).then((value) async {
+              showSnk('password updated');
+
+            }).catchError((error) async {
+            });
+          }
+        });
+      });
+
+
+      if(newPassword!= '' || newPassword!= '' || newPassword!= ''){
+        // ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+        //   SnackBar(content: Text("Profile info modified successfully!"),backgroundColor: Colors.green.withOpacity(0.6)),
+        // );
+
+        Get.back();
+      }else{
+
+        showSnk('no new info to modify');
+
+      }
+
+
+      print('## Email and password updated successfully');
+    } catch (e) {
+
+      showSnk('This operation is sensitive and requires recent authentication.\n Log in again before retrying this request');
+
+      print('## Failed to update email and password:===> $e');
+    }
+  }
+}
 
 // String getMinValue(List<String> values) {
 //   return values.reduce((currentMin, value) {
@@ -91,6 +171,12 @@ String formatNumberAfterComma(String number) {
 
 }
 
+
+showSnk(txt,{Color? clr}){
+  ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+    SnackBar(content: Text(txt),backgroundColor: clr,),
+  );
+}
 dialogShow(title, desc, {bool isSuccessful = false, bool autoHide = false}) {
   AwesomeDialog(
     autoDismiss: true,

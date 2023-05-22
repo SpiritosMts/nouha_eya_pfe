@@ -6,6 +6,7 @@ import 'package:server_room/models/user.dart';
 import 'package:server_room/my_voids.dart';
 
 import '../home_page/home_page.dart';
+import '../my_ui.dart';
 
 
 
@@ -75,7 +76,7 @@ class _MyLoginState extends State<MyLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: backGroundTemplate(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50.0),
           child: Column(
@@ -130,7 +131,8 @@ class _MyLoginState extends State<MyLogin> {
                 style: TextButton.styleFrom(
                   primary: const Color.fromRGBO(33, 150, 243, 1),
                 ),
-                child: const Text('Create an account'),
+                child: const Text('Create an account',style: TextStyle(
+                ),),
               ),
             ],
           ),

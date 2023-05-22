@@ -25,12 +25,12 @@ Future<List<DocumentSnapshot>> getDocumentsByColl(coll) async {
   return documentsFound;
 }
 
-toastShow(text) {
+toastShow(text, {Color? color}) {
   Fluttertoast.showToast(
       msg: text,
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.CENTER,
-      backgroundColor: Colors.green,
+      backgroundColor:color?? Colors.green,
       textColor: Colors.white,
       fontSize: 16.0
   );
@@ -56,16 +56,28 @@ double replaceWithClosestHalf(double value) {
   }
 }
 
-String getMinValue(List<String> values) {
-  return values.reduce((currentMin, value) {
-    return (value.compareTo(currentMin) < 0) ? value : currentMin;
-  });
+double getMinValue(List<String> values) {
+  List<double> doubleList = values.map((str) => double.parse(str)).toList();
+  double minValue = doubleList.reduce((currentMin, value) => value < currentMin ? value : currentMin);
+  return minValue;
 }
-String getMaxValue(List<String> values) {
-  return values.reduce((currentMax, value) {
-    return (value.compareTo(currentMax) > 0) ? value : currentMax;
-  });
+
+double getMaxValue(List<String> values) {
+  List<double> doubleList = values.map((str) => double.parse(str)).toList();
+  double maxValue = doubleList.reduce((currentMax, value) => value > currentMax ? value : currentMax);
+  return maxValue;
 }
+
+// String getMinValue(List<String> values) {
+//   return values.reduce((currentMin, value) {
+//     return (value.compareTo(currentMin) < 0) ? value : currentMin;
+//   });
+// }
+// String getMaxValue(List<String> values) {
+//   return values.reduce((currentMax, value) {
+//     return (value.compareTo(currentMax) > 0) ? value : currentMax;
+//   });
+// }
 
 String formatNumberAfterComma(String number) {
   //final string = number.toString();

@@ -259,7 +259,7 @@ class UsersCtr extends GetxController {
                           color: Colors.blue,
                         ),
                         onTap: () {
-                          showNoHeader(txt: 'Are you sure you want to make this user an admin ?').then((toMakeAdmin) {
+                          showNoHeader(txt: 'Are you sure you want to \nmake this user an admin ?',btnOkText: 'Yes',btnOkColor: Colors.green,icon: Icons.check).then((toMakeAdmin) {
                             if (toMakeAdmin) {
                               makeUserAdmin(user.id!);
                               getUsersData();//refresh

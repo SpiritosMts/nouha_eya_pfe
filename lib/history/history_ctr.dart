@@ -143,9 +143,10 @@ class HistoryCtr extends GetxController {
           actions: [
             ElevatedButton(
               onPressed: () {
-                int count = int.parse(_textEditingController.text);
                 //if(sName.isNotEmpty && servers.contains(sName))
                 if(_serverFormKey.currentState!.validate()){
+                  int count = int.parse(_textEditingController.text);
+
                   deleteFirstValues(count,type);
                   Navigator.of(context).pop();
                   Future.delayed(const Duration(milliseconds: 800), () async { //time to start readin history  data
@@ -183,16 +184,16 @@ class HistoryCtr extends GetxController {
 
       });
 
-      print('## ${dataTypePath} history exists with <${dataHis.length}> values');
+      print('## <${dataTypePath}> history exists with <${dataHis.length}> values');
     } else {
-      print('## ${dataTypePath} history DONT exists');
+      print('## <${dataTypePath}> history DONT exists');
     }
 
     update(['chart']);
     //print('## <<${dataHis.length}>> hisValues=<$dataHis> ');
     return dataHis;
   }
-  List<FlSpot> generateSpots(List dataList) {
+  List<FlSpot> generateHistorySpots(List dataList) {
     //print('## generate spots...');
     // dataList <gas_history>
     List<FlSpot> spots = [];

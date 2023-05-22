@@ -39,8 +39,17 @@ class _MyLoginState extends State<MyLogin> {
         //account found
 
         await getUserInfoByEmail(_emailController.text).then((value) {
-          Get.offAll(() => HomePage());
-          toastShow('Welcome');
+
+
+
+          if(currentUser.verified || currentUser.isAdmin){
+            Get.offAll(() => HomePage());
+            toastShow('Welcome');
+          }else{
+            toastShow('You\'re not approved yet',color: Colors.redAccent);
+          }
+
+
         });
       });
 

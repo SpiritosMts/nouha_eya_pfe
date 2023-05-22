@@ -23,11 +23,11 @@ class HistoryView extends StatefulWidget {
 
 class _HistoryViewState extends State<HistoryView> {
   final HistoryCtr gc = Get.put<HistoryCtr>(HistoryCtr());
-  int eachTimeHis = 3;
+  int eachTimeHis = 7;
 
   Widget chartGraph(dataName, dataList, timeList, valList, minVal, maxVal, wid) {
-    String min = getMinValue(valList);
-    String max = getMaxValue(valList);
+    String min = getMinValue(valList).toString();
+    String max = getMaxValue(valList).toString();
 
     return Column(
       children: [
@@ -172,7 +172,7 @@ class _HistoryViewState extends State<HistoryView> {
                         color: Colors.blue,
                         //spots: points.map((point) => FlSpot(point.x, point.y)).toList(),
 
-                        spots: gc.generateSpots(dataList),
+                        spots: gc.generateHistorySpots(dataList),
                       ),
                     ],
                   ),
@@ -209,8 +209,8 @@ class _HistoryViewState extends State<HistoryView> {
                               gc.gas_history, // list { 'time':25, 'value':147 }
                               gc.gas_times,//list [25,26 ..]
                               gc.gas_values,//list [147,144 ..]
-                              replaceWithClosestHalf(double.parse(getMinValue(gc.gas_values)) - 200.0),
-                              replaceWithClosestHalf(double.parse(getMaxValue(gc.gas_values)) + 200.0),
+                              replaceWithClosestHalf(getMinValue(gc.gas_values) - 200.0),
+                              replaceWithClosestHalf(getMaxValue(gc.gas_values) + 200.0),
                               gc.gas_history.length / 50 < 1.0 ? 1.0 : gc.gas_history.length / 50,
                             ),
 
@@ -222,8 +222,8 @@ class _HistoryViewState extends State<HistoryView> {
                               gc.temp_history,
                               gc.tem_times,
                               gc.tem_values,
-                              replaceWithClosestHalf(double.parse(getMinValue(gc.tem_values)) - 1.0),
-                              replaceWithClosestHalf(double.parse(getMaxValue(gc.tem_values)) + 1.0),
+                              replaceWithClosestHalf(getMinValue(gc.tem_values) - 1.0),
+                              replaceWithClosestHalf(getMaxValue(gc.tem_values) + 1.0),
                               gc.temp_history.length / 50 < 1.0 ? 1.0 : gc.temp_history.length / 50,
                             ),
 
@@ -235,8 +235,9 @@ class _HistoryViewState extends State<HistoryView> {
                               gc.noise_history,
                               gc.noise_times,
                               gc.noise_values,
-                              100.0,
-                              5000.0,
+                              replaceWithClosestHalf(getMinValue(gc.noise_values) - 200.0),
+                              replaceWithClosestHalf(getMaxValue(gc.noise_values) + 200.0),
+
                               // double.parse(getMinValue(gc.noise_values))-2.0,
                               // double.parse(getMaxValue(gc.noise_values))+2.0,
                               gc.noise_history.length / 50 < 1.0 ? 1.0 : gc.noise_history.length / 50,

@@ -1,40 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'home_page/home_page_ctr.dart';
 
 class NotificationsPage extends StatefulWidget {
-  const NotificationsPage({Key? key}) : super(key: key);
-
   @override
   _NotificationsPageState createState() => _NotificationsPageState();
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  bool _enableNotifications = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text('Notifications'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Enable Notifications',
-              style: TextStyle(fontSize: 24),
-            ),
-            Switch(
-              value: _enableNotifications,
-              onChanged: (value) {
-                setState(() {
-                  _enableNotifications = value;
-                });
-              },
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.only(left: 100.0),
+        child: GetBuilder<HomePageCtr>(
+          builder: (gc) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                buildSwitch('Gas', gc.isGasActive, (value) {
+
+                  gc.isGasActive = value;
+                  gc.update();
+                  print('## isGasActive : ${gc.isGasActive}');
+                }),
+                buildSwitch('Temperature', gc.isTemperatureActive, (value) {
+                    gc.isTemperatureActive = value;
+                    gc.update();
+                    print('## isTemperatureActive : ${gc.isTemperatureActive}');
+
+                }),
+                buildSwitch('Noise', gc.isNoiseActive, (value) {
+                    gc.isNoiseActive = value;
+                    gc.update();
+                    print('## isNoiseActive : ${gc.isNoiseActive}');
+
+                }),
+              ],
+            );
+          }
         ),
       ),
+    );
+  }
+
+  Widget buildSwitch(String label, bool value, ValueChanged<bool> onChanged) {
+    return Row(
+      children: [
+        Text(label,style: TextStyle(
+          fontSize: 20
+        )),
+        SizedBox(width: 20,),
+        Switch(
+          value: value,
+          onChanged: onChanged,
+        ),
+      ],
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:server_room/auth/login.dart';
+import 'package:server_room/awesomeNotif.dart';
 import 'package:server_room/home_page/home_page.dart';
 import 'package:server_room/auth/register.dart';
 import 'package:server_room/home_page/home_page_ctr.dart';
@@ -17,6 +18,8 @@ void main() async {
   print('## mainRun');
   await WidgetsFlutterBinding.ensureInitialized(); //don't touch
   sharedPrefs = await SharedPreferences.getInstance();
+  await NotificationController.initializeLocalNotifications(debug: true);///awesome notif
+
   await Firebase.initializeApp();//begin firebase
 
 
@@ -27,8 +30,8 @@ void main() async {
           navigatorKey: navigatorKey,
           title: 'Server Room',
           debugShowCheckedModeBanner: false,
-          //home: HomePage(),
-          home: MyLogin(),
+          home: HomePage(),
+          //home: MyLogin(),
         );
       }
     ),

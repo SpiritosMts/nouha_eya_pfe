@@ -8,6 +8,8 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:server_room/my_voids.dart';
 import 'package:server_room/profile/manage_profile_ctr.dart';
 
+import '../models/user.dart';
+
 class ManageProfile extends StatefulWidget {
   const ManageProfile({Key? key}) : super(key: key);
 
@@ -48,6 +50,19 @@ class _ManageProfileState extends State<ManageProfile> {
 
   }
 
+
+  refreshUser(email){
+    getUserInfoByEmail(email);
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+
+
+      setState(() {
+
+      });
+
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +139,23 @@ class _ManageProfileState extends State<ManageProfile> {
 
                                 if (_formKey.currentState!.validate()) {
                                   //changeUserInfo(_nameController.text, _emailController.text,_passwordController.text);
-                                  await changeUserName(_nameController.text);
+                                 //  changeUserName(_nameController.text);
+
+                                   await usersColl.doc(currentUser.id).get().then((DocumentSnapshot documentSnapshot) async {
+                                    if (documentSnapshot.exists) {
+                                      await usersColl.doc(currentUser.id).update({
+                                        'name': _nameController.text, // turn verified to true in  db
+                                      }).then((value) async {
+                                        showSnk('name updated');
+                                        refreshUser(currentUser.email);
+
+                                      }).catchError((error) async {
+                                        //print('## user request accepted accepting error =${error}');
+                                        //toastShow('user request accepted accepting error');
+                                      });
+                                    }
+                                  });
+
                                 }
                               },
                               child: const Text("Change"),
@@ -165,14 +196,17 @@ class _ManageProfileState extends State<ManageProfile> {
 
 
                                       // Change password
-                                      if(_emailController.text!= '')  await user.updatePassword(_emailController.text).then((value){
+                                      if(_emailController.text!= '')  await user.updateEmail(_emailController.text).then((value){
+
+                                        print('## pwd auth updated');
                                         usersColl.doc(currentUser.id).get().then((DocumentSnapshot documentSnapshot) async {
                                           if (documentSnapshot.exists) {
                                             await usersColl.doc(currentUser.id).update({
                                               'email': _emailController.text, // turn verified to true in  db
                                             }).then((value) async {
+                                              print('## pwd firestore updated');
                                               showSnk('email updated');
-
+                                              refreshUser(_emailController.text);
                                             }).catchError((error) async {
                                             });
                                           }
@@ -184,8 +218,7 @@ class _ManageProfileState extends State<ManageProfile> {
                                     } catch (e) {
 
                                       showSnk('This operation is sensitive and requires recent authentication.\n Log in again before retrying this request');
-
-                                      print('## Failed to update email:===> $e');
+                                      print('## Failed 4to update email:===> $e');
                                     }
                                   }
                                 }
@@ -230,7 +263,6 @@ class _ManageProfileState extends State<ManageProfile> {
                                     try {
 
 
-
                                       // Change password
                                       if(_passwordController.text!= '')  await user.updatePassword(_passwordController.text).then((value){
                                         usersColl.doc(currentUser.id).get().then((DocumentSnapshot documentSnapshot) async {
@@ -239,6 +271,7 @@ class _ManageProfileState extends State<ManageProfile> {
                                               'pwd': _passwordController.text, // turn verified to true in  db
                                             }).then((value) async {
                                               showSnk('password updated');
+                                              refreshUser(currentUser.email);
 
                                             }).catchError((error) async {
                                             });

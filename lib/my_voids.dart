@@ -69,22 +69,7 @@ double getMaxValue(List<String> values) {
   return maxValue;
 }
 changeUserName(String newName) {
-  usersColl.doc(currentUser.id).get().then((DocumentSnapshot documentSnapshot) async {
-    if (documentSnapshot.exists) {
-      await usersColl.doc(currentUser.id).update({
-        'name': newName, // turn verified to true in  db
-      }).then((value) async {
-        showSnk('name updated');
 
-        //addFirstServer(userID);
-        //print('## user request accepted');
-        //toastShow('user request accepted');
-      }).catchError((error) async {
-        //print('## user request accepted accepting error =${error}');
-        //toastShow('user request accepted accepting error');
-      });
-    }
-  });
 }
 void changeUserInfo(String newName,String newEmail, String newPassword) async {
   User? user = FirebaseAuth.instance.currentUser;

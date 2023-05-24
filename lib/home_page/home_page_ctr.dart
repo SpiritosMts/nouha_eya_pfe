@@ -254,7 +254,7 @@ class HomePageCtr extends GetxController {
 Future<int> getChildrenLength() async {
     String userID = currentUser.id!;
     int serverNumbers = 0;
-  DatabaseReference serverData = database!.ref('Leoni/LTN4');
+  DatabaseReference serverData = database!.ref('Leoni');
     //servers = sharedPrefs!.getStringList('servers') ?? ['server1'];
 
     final snapshot = await serverData.get();
@@ -342,7 +342,7 @@ Future<int> getChildrenLength() async {
       print('## +saved servers: <$serversNumber>:<$servers>');
     }
 
-    DatabaseReference serverData = database!.ref('Leoni/LTN4');
+    DatabaseReference serverData = database!.ref('Leoni');
     await serverData.update({
       "$serverName": {
         "gas_once": 0.0,
@@ -359,7 +359,7 @@ Future<int> getChildrenLength() async {
 
   }
    removeServer(serverName) async {
-     await database!.ref('Leoni/LTN4/$serverName').remove().then((value) async {
+     await database!.ref('Leoni/$serverName').remove().then((value) async {
        print('##  < $serverName > removed!');
      });
      servers.remove(serverName);
@@ -460,9 +460,9 @@ Future<int> getChildrenLength() async {
   }
 
   realTimeListen(String ser) async {
-    print('## realTimeListen <Leoni/LTN4/$ser> ...');
-    //DatabaseReference serverData = database!.ref('Leoni/LTN4/$server');
-    DatabaseReference serverData = database!.ref('Leoni/LTN4/$ser');
+    print('## realTimeListen <Leoni/$ser> ...');
+    //DatabaseReference serverData = database!.ref('Leoni/$server');
+    DatabaseReference serverData = database!.ref('Leoni/$ser');
       streamData = serverData.onValue.listen((DatabaseEvent event) {
 
 

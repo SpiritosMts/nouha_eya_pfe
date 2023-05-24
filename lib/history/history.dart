@@ -203,7 +203,7 @@ class _HistoryViewState extends State<HistoryView> {
                         //mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           /// GAS chart
-                          if (gc.gas_history.isNotEmpty)
+                           (gc.gas_history.isNotEmpty)?
                             chartGraph(
                               'gas',
                               gc.gas_history, // list { 'time':25, 'value':147 }
@@ -212,11 +212,19 @@ class _HistoryViewState extends State<HistoryView> {
                               replaceWithClosestHalf(getMinValue(gc.gas_values) - 200.0),
                               replaceWithClosestHalf(getMaxValue(gc.gas_values) + 200.0),
                               gc.gas_history.length / 50 < 1.0 ? 1.0 : gc.gas_history.length / 50,
-                            ),
+                            ):Center(
+                             child: Text(
+                               'no gas history saved yet',
+                               style: TextStyle(
+                                 color: Colors.grey,
+                                 fontSize: 22,
+                               ),
+                             ),
+                           ),
 
                           /// temperature chart
                           SizedBox(height: 20),
-                          if (gc.temp_history.isNotEmpty)
+                          (gc.temp_history.isNotEmpty)?
                             chartGraph(
                               'temperature',
                               gc.temp_history,
@@ -225,11 +233,19 @@ class _HistoryViewState extends State<HistoryView> {
                               replaceWithClosestHalf(getMinValue(gc.tem_values) - 1.0),
                               replaceWithClosestHalf(getMaxValue(gc.tem_values) + 1.0),
                               gc.temp_history.length / 50 < 1.0 ? 1.0 : gc.temp_history.length / 50,
+                            ):Center(
+                            child: Text(
+                              'no temp history saved yet',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 22,
+                              ),
                             ),
+                          ),
 
                           /// noise chart
                           SizedBox(height: 20),
-                          if (gc.noise_history.isNotEmpty)
+                          (gc.noise_history.isNotEmpty)?
                             chartGraph(
                               'sound',
                               gc.noise_history,
@@ -241,7 +257,15 @@ class _HistoryViewState extends State<HistoryView> {
                               // double.parse(getMinValue(gc.noise_values))-2.0,
                               // double.parse(getMaxValue(gc.noise_values))+2.0,
                               gc.noise_history.length / 50 < 1.0 ? 1.0 : gc.noise_history.length / 50,
+                            ):Center(
+                            child: Text(
+                              'no sound history saved yet',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 22,
+                              ),
                             ),
+                          ),
                           SizedBox(height: 20)
                         ],
                       ),

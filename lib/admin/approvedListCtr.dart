@@ -87,7 +87,7 @@ class UsersCtr extends GetxController {
 
   addFirstServer(userID) async {
 
-    DatabaseReference serverData = database!.ref('Leoni/LTN4');
+    DatabaseReference serverData = database!.ref('Leoni');
     await serverData.update({
       "$userID}": {
         "server1": {

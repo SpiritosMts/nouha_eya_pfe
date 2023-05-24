@@ -63,19 +63,19 @@ class HistoryCtr extends GetxController {
 
 
     loading = true;
-    gas_history = await getHistoryData('Leoni/LTN4/SR1/gas'); // path history
+    gas_history = await getHistoryData('Leoni/LTN4SR1/gas'); // path history
     gas_values = gas_history.map((map) => map['value'].toDouble().toString() ).toList();
     gas_times = gas_history.map((map) => map['time'].toString() ).toList();
     print('## gas_history<${gas_history.length}>// gas_values<${gas_values}>// gas_times<${gas_times}>');
 
 
 
-    temp_history = await getHistoryData('Leoni/LTN4/SR1/temperature');
+    temp_history = await getHistoryData('Leoni/LTN4SR1/temperature');
     tem_values = temp_history.map((map) => map['value'].toString() ).toList();
     tem_times = temp_history.map((map) => map['time'].toString() ).toList();
     //
     //
-    noise_history = await getHistoryData('Leoni/LTN4/SR1/sound');
+    noise_history = await getHistoryData('Leoni/LTN4SR1/sound');
     noise_values = noise_history.map((map) => map['value'].toString() ).toList();
     noise_times = noise_history.map((map) => map['time'].toString() ).toList();
 
@@ -87,7 +87,7 @@ class HistoryCtr extends GetxController {
 
   /// delete history values /////
   deleteFirstValues(int deleteCount,String type) async {
-      DatabaseReference gasRef = database!.ref('Leoni/LTN4/SR1/$type');
+      DatabaseReference gasRef = database!.ref('Leoni/LTN4SR1/$type');
 
     await gasRef.limitToFirst(deleteCount).once().then((DatabaseEvent value) {
       if (value.snapshot.exists){

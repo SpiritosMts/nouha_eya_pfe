@@ -23,6 +23,7 @@ class HistoryView extends StatefulWidget {
 
 class _HistoryViewState extends State<HistoryView> {
   final HistoryCtr gc = Get.put<HistoryCtr>(HistoryCtr());
+  final HomePageCtr gcc = Get.put<HomePageCtr>(HomePageCtr());
   int eachTimeHis = 7;
 
   Widget chartGraph(dataName, dataList, timeList, valList, minVal, maxVal, wid) {
@@ -172,7 +173,7 @@ class _HistoryViewState extends State<HistoryView> {
                         color: Colors.blue,
                         //spots: points.map((point) => FlSpot(point.x, point.y)).toList(),
 
-                        spots: gc.generateHistorySpots(dataList),
+                        spots: gc.generateHistorySpots(valList),
                       ),
                     ],
                   ),
@@ -189,8 +190,67 @@ class _HistoryViewState extends State<HistoryView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('History'),
+        title:  Text('History'),
+        actions: <Widget>[
+          IconButton(
+            padding: EdgeInsets.only(left: 0.0),
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              gcc.addServer(context);
+              //sharedPrefs!.clear();
+            },
+          ),
+          GetBuilder<HomePageCtr>(
+              id:'appBar',
+              builder: (_) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: DropdownButton<String>(
+                    icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                    underline: Container(),
+                    dropdownColor: Colors.blue,
+                    value: gcc.selectedServer,
+                    items: gcc.servers.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child:  Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              value,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            if(gcc.selectedServer != value) GestureDetector(
+                              child: Icon(
+                                size: 20,
+                                Icons.close,
+                                color: Colors.red,
+                              ),
+                              onTap: () {
+                                showNoHeader(txt: 'Are you sure you want to remove this server ?').then((toRemove) {
+                                  if (toRemove) {
+                                    gcc.removeServer('$value');
+                                  }
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      //print('## select $newValue');
+
+                      gcc.changeServer(newValue);
+
+                    },
+                  ),
+                );
+              }
+          ),
+        ],
       ),
+
       body: GetBuilder<HomePageCtr>(
           id: 'chart',
           builder: (_) {
@@ -202,15 +262,20 @@ class _HistoryViewState extends State<HistoryView> {
                         //shrinkWrap: true,
                         //mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+
+
                           /// GAS chart
                            (gc.gas_history.isNotEmpty)?
                             chartGraph(
                               'gas',
                               gc.gas_history, // list { 'time':25, 'value':147 }
                               gc.gas_times,//list [25,26 ..]
-                              gc.gas_values,//list [147,144 ..]
-                              replaceWithClosestHalf(getMinValue(gc.gas_values) - 200.0),
-                              replaceWithClosestHalf(getMaxValue(gc.gas_values) + 200.0),
+                              gcc.selectedServer  =='LTN4SR1'? gc.gas_values :List<String>.generate(
+                                gc.gas_history.length,
+                                    (i) => '0',
+                              ),//list [147,144 ..]
+                              gcc.selectedServer  =='LTN4SR1'? replaceWithClosestHalf(getMinValue(gc.gas_values) - 200.0):20.0,
+                              gcc.selectedServer  =='LTN4SR1'? replaceWithClosestHalf(getMaxValue(gc.gas_values) + 200.0):-20.0,
                               gc.gas_history.length / 50 < 1.0 ? 1.0 : gc.gas_history.length / 50,
                             ):Center(
                              child: Text(
@@ -229,9 +294,12 @@ class _HistoryViewState extends State<HistoryView> {
                               'temperature',
                               gc.temp_history,
                               gc.tem_times,
-                              gc.tem_values,
-                              replaceWithClosestHalf(getMinValue(gc.tem_values) - 1.0),
-                              replaceWithClosestHalf(getMaxValue(gc.tem_values) + 1.0),
+                              gcc.selectedServer  =='LTN4SR1'? gc.tem_values :List<String>.generate(
+                                gc.temp_history.length,
+                                    (i) => '0',
+                              ),//list [147,144 ..]
+                              gcc.selectedServer  =='LTN4SR1'? replaceWithClosestHalf(getMinValue(gc.tem_values) - 1.0):20.0,
+                              gcc.selectedServer  =='LTN4SR1'? replaceWithClosestHalf(getMaxValue(gc.tem_values) + 1.0):-20.0,
                               gc.temp_history.length / 50 < 1.0 ? 1.0 : gc.temp_history.length / 50,
                             ):Center(
                             child: Text(
@@ -250,9 +318,12 @@ class _HistoryViewState extends State<HistoryView> {
                               'sound',
                               gc.noise_history,
                               gc.noise_times,
-                              gc.noise_values,
-                              replaceWithClosestHalf(getMinValue(gc.noise_values) - 200.0),
-                              replaceWithClosestHalf(getMaxValue(gc.noise_values) + 200.0),
+                              gcc.selectedServer  =='LTN4SR1'? gc.noise_values :List<String>.generate(
+                                gc.noise_history.length,
+                                    (i) => '0',
+                              ),//list [147,144 ..]
+                              gcc.selectedServer  =='LTN4SR1'? replaceWithClosestHalf(getMinValue(gc.noise_values) - 200.0):20.0,
+                              gcc.selectedServer  =='LTN4SR1'? replaceWithClosestHalf(getMaxValue(gc.noise_values) + 200.0):-20.0,
 
                               // double.parse(getMinValue(gc.noise_values))-2.0,
                               // double.parse(getMaxValue(gc.noise_values))+2.0,

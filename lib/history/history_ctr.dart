@@ -203,7 +203,7 @@ class HistoryCtr extends GetxController {
       spots.add(
           FlSpot(
               i.toDouble(), // X
-              double.parse(dataList[i]['value'].toString()) // Y
+              double.parse(dataList[i]) // Y
           )
       );
     }

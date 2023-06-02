@@ -39,7 +39,7 @@ class _HistoryViewState extends State<HistoryView> {
             children: [
               Text('${dataName} ', textAlign: TextAlign.left, style: TextStyle(fontSize: 22)),
               Text('(min:$min, max:$max)', textAlign: TextAlign.left, style: TextStyle(fontSize: 15, color: Colors.black54)),
-              TextButton(
+              if(gcc.selectedServer  =='LTN4SR1') TextButton(
                 onPressed: () async {
                   await gc.deleteHisDialog(context, dataName, dataList);  // shoiw delete dialog
                 },
@@ -192,14 +192,14 @@ class _HistoryViewState extends State<HistoryView> {
       appBar: AppBar(
         title:  Text('History'),
         actions: <Widget>[
-          IconButton(
-            padding: EdgeInsets.only(left: 0.0),
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              gcc.addServer(context);
-              //sharedPrefs!.clear();
-            },
-          ),
+          // IconButton(
+          //   padding: EdgeInsets.only(left: 0.0),
+          //   icon: const Icon(Icons.add),
+          //   onPressed: () {
+          //     gcc.addServer(context);
+          //     //sharedPrefs!.clear();
+          //   },
+          // ),
           GetBuilder<HomePageCtr>(
               id:'appBar',
               builder: (_) {
